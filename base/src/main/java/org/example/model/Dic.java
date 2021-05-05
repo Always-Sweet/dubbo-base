@@ -1,5 +1,6 @@
 package org.example.model;
 
+import jakarta.validation.constraints.NotBlank;
 import lombok.Data;
 
 import javax.persistence.Column;
@@ -18,9 +19,11 @@ public class Dic implements Serializable {
     private String dicId;
 
     @Column(name = "dic_code")
+    @NotBlank(message = "字典编码不能为空")
     private String dicCode;
 
     @Column(name = "dic_name")
+    @NotBlank(message = "字典名称不能为空")
     private String dicName;
 
     @Column(name = "fg_delete")
