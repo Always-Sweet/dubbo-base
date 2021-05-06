@@ -10,6 +10,6 @@ public interface BaseService<T> {
     void batchDelete(List<String> ids, String type);
 
     T get(String id);
-    List<T> getOfPage(Integer page, Integer size);
+    List<T> getOfPage(Object param, Integer page, Integer size);
 
 }
