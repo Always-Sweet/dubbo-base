@@ -4,9 +4,12 @@ import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.example.Constant;
 import org.example.dic.dao.DicDao;
+import org.example.dto.dic.DicDo;
 import org.example.dto.dic.DicQuery;
-import org.example.model.Dic;
+import org.example.dic.model.Dic;
+import org.example.dto.dic.DicVo;
 import org.example.service.dic.DicService;
+import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -19,6 +22,7 @@ import javax.persistence.criteria.Predicate;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
+import java.util.stream.Collectors;
 
 @Service("dicService")
 public class DicServiceImpl implements DicService {
@@ -28,28 +32,32 @@ public class DicServiceImpl implements DicService {
 
     @Override
     @Transactional
-    public void add(@Validated Dic dic) {
-        Dic search = dicDao.getById(dic.getDicCode());
+    public void add(@Validated DicDo dicDo) {
+        Dic search = dicDao.getById(dicDo.getDicCode());
         // 如果非空则已存在，不能重复创建
         if (search != null) {
             // throw error
         }
 
-        dic.setDicId(UUID.randomUUID().toString());
+        dicDo.setDicId(UUID.randomUUID().toString());
+        Dic dic = new Dic();
+        BeanUtils.copyProperties(dicDo, dic);
+        dic.setFgDelete(Constant.FG.NO_0);
         dicDao.save(dic);
         System.out.println("字典添加成功……");
     }
 
     @Override
     @Transactional
-    public void update(Dic dic) {
-        Dic search = dicDao.getById(dic.getDicId());
+    public void update(@Validated DicDo dicDo) {
+        Dic search = dicDao.getById(dicDo.getDicId());
         // 如果为空则不存在，无法更新
         if (search == null) {
             // throw error
         }
 
-        dicDao.save(dic);
+        BeanUtils.copyProperties(dicDo, search);
+        dicDao.save(search);
         System.out.println("字典更新成功……");
     }
 
@@ -94,21 +102,21 @@ public class DicServiceImpl implements DicService {
 
     @Override
     @Transactional(readOnly = true)
-    public Dic get(String id) {
+    public DicVo get(String id) {
         if (StringUtils.isEmpty(id)) {
             // throw error
         }
 
         Dic search = dicDao.getById(id);
-        System.out.println("字典查询：" + search.toString());
-        return search;
+        DicVo dicVo = new DicVo();
+        BeanUtils.copyProperties(search, dicVo);
+        System.out.println("字典查询：" + dicVo.toString());
+        return dicVo;
     }
 
     @Override
     @Transactional(readOnly = true)
-    public List<Dic> getOfPage(Object param, Integer page, Integer size) {
-        DicQuery paramDto = (DicQuery) param;
-
+    public List<DicVo> getOfPage(DicQuery paramDto, Integer page, Integer size) {
         Pageable pageable = PageRequest.of(page, size);
         Specification<Dic> specification = (Specification<Dic>) (root, query, criteriaBuilder) -> {
             List<Predicate> list = new ArrayList<>();
@@ -123,7 +131,12 @@ public class DicServiceImpl implements DicService {
             }
             return criteriaBuilder.and(list.toArray(new Predicate[0]));
         };
-        return dicDao.findAll(specification, pageable).toList();
+        List<Dic> search =  dicDao.findAll(specification, pageable).toList();
+        return search.stream().map(dicDo -> {
+            DicVo dicVo = new DicVo();
+            BeanUtils.copyProperties(dicDo, dicVo);
+            return dicVo;
+        }).collect(Collectors.toList());
     }
 
 
