@@ -15,7 +15,7 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/dic")
-@Api(tags = "字典接口")
+@Api(value = "字典基础接口", tags = {"字典模块"})
 public class DicController {
 
     @Autowired
