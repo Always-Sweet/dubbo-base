@@ -2,7 +2,9 @@ package org.example.api.controller;
 
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
-import org.example.Constant;
+import org.example.ResultBuilder;
+import org.example.dto.Result;
+import org.example.dto.dic.DicDeleteParams;
 import org.example.dto.dic.DicDo;
 import org.example.dto.dic.DicQuery;
 import org.example.dto.dic.DicVo;
@@ -23,32 +25,34 @@ public class DicController {
 
     @GetMapping()
     @ApiOperation(value = "获取字典", notes = "根据主键获取字典", httpMethod = "GET")
-    public DicVo get(@RequestParam("id") String id) {
-        return dicService.get(id);
+    public Result get(@RequestParam("id") String id) {
+        return ResultBuilder.successWithData(dicService.get(id));
     }
 
     @GetMapping("/query")
     @ApiOperation(value = "查询字典", notes = "根据参数查询字典列表", httpMethod = "GET")
-    public List<DicVo> get(@RequestBody DicQuery query, Integer page, Integer size) {
-        return dicService.getOfPage(query, page, size);
+    public Result get(@RequestBody @Validated DicQuery query) {
+        return ResultBuilder.successWithData(dicService.getOfPage(query));
     }
 
     @PostMapping
     @ApiOperation(value = "新增字典", notes = "新增字典", httpMethod = "POST")
-    public void add(@RequestBody @Validated DicDo dic) {
-        dicService.add(dic);
+    public Result add(@RequestBody @Validated DicDo dic) {
+        return ResultBuilder.successWithData(dicService.add(dic));
     }
 
     @PutMapping
     @ApiOperation(value = "更新字典", notes = "更新字典", httpMethod = "PUT")
-    public void modify(@RequestBody @Validated DicDo dic) {
+    public Result modify(@RequestBody @Validated DicDo dic) {
         dicService.update(dic);
+        return ResultBuilder.successWithoutData();
     }
 
     @DeleteMapping
-    @ApiOperation(value = "删除字典", notes = "软删除字典", httpMethod = "DELETE")
-    public void delete(@RequestParam("id") String id) {
-        dicService.delete(id, Constant.DELETE_TYPE.SOFT_0);
+    @ApiOperation(value = "删除字典", notes = "多选删除及删除形式（注销/数据沉默）", httpMethod = "DELETE")
+    public Result delete(@RequestBody DicDeleteParams dicDeleteParams) {
+        dicService.batchDelete(dicDeleteParams.getIds(), dicDeleteParams.getDeleteType());
+        return ResultBuilder.successWithoutData();
     }
 
 }

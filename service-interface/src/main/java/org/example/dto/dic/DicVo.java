@@ -19,4 +19,7 @@ public class DicVo implements Serializable {
     @ApiModelProperty(value = "字典名称", example = "dicName")
     private String dicName;
 
+    @ApiModelProperty(value = "注销状态", example = "0")
+    private Integer fgActive;
+
 }

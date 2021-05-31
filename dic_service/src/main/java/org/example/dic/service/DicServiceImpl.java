@@ -32,7 +32,7 @@ public class DicServiceImpl implements DicService {
 
     @Override
     @Transactional
-    public void add(@Validated DicDo dicDo) {
+    public String add(@Validated DicDo dicDo) {
         Dic search = dicDao.getById(dicDo.getDicCode());
         // 如果非空则已存在，不能重复创建
         if (search != null) {
@@ -42,9 +42,9 @@ public class DicServiceImpl implements DicService {
         dicDo.setDicId(UUID.randomUUID().toString());
         Dic dic = new Dic();
         BeanUtils.copyProperties(dicDo, dic);
-        dic.setFgDelete(Constant.FG.NO_0);
         dicDao.save(dic);
         System.out.println("字典添加成功……");
+        return dic.getDicId();
     }
 
     @Override
@@ -107,17 +107,19 @@ public class DicServiceImpl implements DicService {
             // throw error
         }
 
-        Dic search = dicDao.getById(id);
         DicVo dicVo = new DicVo();
-        BeanUtils.copyProperties(search, dicVo);
+        Dic search = dicDao.getById(id);
+        if (search != null) {
+            BeanUtils.copyProperties(search, dicVo);
+        }
         System.out.println("字典查询：" + dicVo.toString());
         return dicVo;
     }
 
     @Override
     @Transactional(readOnly = true)
-    public List<DicVo> getOfPage(DicQuery paramDto, Integer page, Integer size) {
-        Pageable pageable = PageRequest.of(page, size);
+    public List<DicVo> getOfPage(DicQuery paramDto) {
+        Pageable pageable = PageRequest.of(paramDto.getPage() - 1, paramDto.getPageSize());
         Specification<Dic> specification = (Specification<Dic>) (root, query, criteriaBuilder) -> {
             List<Predicate> list = new ArrayList<>();
             Predicate p = null;
