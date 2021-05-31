@@ -7,13 +7,11 @@ import org.example.dto.Result;
 import org.example.dto.dic.DicDeleteParams;
 import org.example.dto.dic.DicDo;
 import org.example.dto.dic.DicQuery;
-import org.example.dto.dic.DicVo;
 import org.example.service.dic.DicService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.List;
 
 @RestController
 @RequestMapping("/dic")

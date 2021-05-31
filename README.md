@@ -20,3 +20,7 @@ build of dubbo
     接口中心，以RestFul接口形式对外暴露
     
     集成Swagger接口文档
+
+    统一异常处理
+
+    规范返回对象

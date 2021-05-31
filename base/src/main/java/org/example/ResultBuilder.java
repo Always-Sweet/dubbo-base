@@ -42,4 +42,8 @@ public class ResultBuilder {
     public static Result failure(ResultCode code) {
         return new Result(code, null);
     }
+
+    public static Result failure(ResultCode code, String msg) {
+        return new Result(code, msg);
+    }
 }
