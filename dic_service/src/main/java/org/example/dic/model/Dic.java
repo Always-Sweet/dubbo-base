@@ -1,9 +1,7 @@
 package org.example.dic.model;
 
-import io.swagger.annotations.ApiModel;
-import io.swagger.annotations.ApiModelProperty;
-import jakarta.validation.constraints.NotBlank;
 import lombok.Data;
+import org.hibernate.annotations.DynamicInsert;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -14,6 +12,7 @@ import java.io.Serializable;
 @Data
 @Entity
 @Table(name = "dic")
+@DynamicInsert
 public class Dic implements Serializable {
 
     @Id
@@ -26,6 +25,9 @@ public class Dic implements Serializable {
 
     @Column(name = "dic_name")
     private String dicName;
+
+    @Column(name = "fg_active")
+    private Integer fgActive;
 
     @Column(name = "fg_delete")
     private Integer fgDelete;
