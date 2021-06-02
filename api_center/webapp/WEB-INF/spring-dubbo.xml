@@ -12,6 +12,9 @@
     <!-- 注册中心地址 -->
     <dubbo:registry protocol="zookeeper" address="127.0.0.1:2181" />
     <!-- 引用服务 -->
-    <dubbo:reference id="dicService" interface="org.example.service.dic.DicService" />
+    <dubbo:reference id="dicService" interface="org.example.service.dic.DicService">
+        <!-- 单独设置超时时长及重试次数 -->
+        <dubbo:method name="get" timeout="2500" retries="3" />
+    </dubbo:reference>
 
 </beans>
