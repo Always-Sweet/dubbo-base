@@ -29,7 +29,7 @@ public class DicController {
 
     @GetMapping()
     @ApiOperation(value = "获取字典", notes = "根据主键获取字典", httpMethod = "GET")
-    public Result get(@RequestParam("id") String id) {
+    public Result get(@RequestParam("id") String id) throws LogicError {
         return ResultBuilder.successWithData(dicService.get(id));
     }
 

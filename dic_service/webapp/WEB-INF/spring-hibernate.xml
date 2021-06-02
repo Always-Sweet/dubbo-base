@@ -14,7 +14,7 @@
        http://www.springframework.org/schema/data/jpa/spring-jpa.xsd">
 
     <!-- 配置Druid数据源 -->
-    <context:property-placeholder location="db.properties" ></context:property-placeholder>
+    <context:property-placeholder location="./WEB-INF/db.properties" ></context:property-placeholder>
     <bean id="dataSource" class="com.alibaba.druid.pool.DruidDataSource">
         <property name="driverClassName" value="${jdbc.driverClass}" />
         <property name="url" value="${jdbc.url}" />

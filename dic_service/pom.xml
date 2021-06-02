@@ -7,6 +7,7 @@
     <groupId>org.example</groupId>
     <artifactId>dic_service</artifactId>
     <version>1.0-SNAPSHOT</version>
+    <packaging>war</packaging>
 
     <properties>
         <maven.compiler.source>8</maven.compiler.source>
@@ -18,6 +19,7 @@
             <groupId>org.example</groupId>
             <artifactId>base</artifactId>
             <version>1.0-SNAPSHOT</version>
+
         </dependency>
         <dependency>
             <groupId>org.example</groupId>
@@ -87,5 +89,23 @@
         </dependency>
 
     </dependencies>
+
+    <build>
+        <finalName>dic_service</finalName>
+        <plugins>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-war-plugin</artifactId>
+                <version>3.3.1</version>
+                <configuration>
+                    <webResources>
+                        <resource>
+                            <directory>webapp</directory>
+                        </resource>
+                    </webResources>
+                </configuration>
+            </plugin>
+        </plugins>
+    </build>
 
 </project>

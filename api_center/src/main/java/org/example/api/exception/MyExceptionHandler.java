@@ -1,8 +1,10 @@
 package org.example.api.exception;
 
+import org.apache.commons.lang3.StringUtils;
 import org.example.ResultBuilder;
 import org.example.ResultCode;
 import org.example.dto.Result;
+import org.example.exception.LogicError;
 import org.springframework.validation.BindException;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.ObjectError;
@@ -21,15 +23,18 @@ public class MyExceptionHandler {
 
     @ExceptionHandler(Exception.class)
     public Result handler(Exception e) {
-        e.printStackTrace();
         if (e instanceof BindException) {
             BindingResult result = ((BindException) e).getBindingResult();
             return validatorCheck(result);
         } else if (e instanceof MethodArgumentNotValidException) {
             BindingResult result = ((MethodArgumentNotValidException) e).getBindingResult();
             return validatorCheck(result);
+        } else if (e instanceof LogicError) {
+            return ResultBuilder.failure(((LogicError) e).getResultCode(), e.getMessage());
         }
-        return ResultBuilder.failure(ResultCode.FAILURE, e.toString());
+        e.printStackTrace();
+        return ResultBuilder.failure(ResultCode.FAILURE, StringUtils.isNotBlank(e.getMessage()) ?
+                e.getMessage() : e.toString());
     }
 
     public Result validatorCheck(BindingResult result) {

@@ -8,7 +8,7 @@ public class MainApplication {
 
     public static void main(String[] args) throws IOException {
         ClassPathXmlApplicationContext context
-                = new ClassPathXmlApplicationContext("spring.xml");
+                = new ClassPathXmlApplicationContext("webapp/spring.xml");
         context.start();
         System.in.read();
     }

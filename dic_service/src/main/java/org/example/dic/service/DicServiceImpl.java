@@ -3,12 +3,16 @@ package org.example.dic.service;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.example.Constant;
+import org.example.ResultCode;
 import org.example.dic.dao.DicDao;
 import org.example.dto.dic.DicDo;
 import org.example.dto.dic.DicQuery;
 import org.example.dic.model.Dic;
 import org.example.dto.dic.DicVo;
+import org.example.exception.LogicError;
 import org.example.service.dic.DicService;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
@@ -26,6 +30,8 @@ import java.util.stream.Collectors;
 
 @Service("dicService")
 public class DicServiceImpl implements DicService {
+
+    private static final Logger log = LoggerFactory.getLogger(DicServiceImpl.class);
 
     @Autowired
     DicDao dicDao;
@@ -102,9 +108,15 @@ public class DicServiceImpl implements DicService {
 
     @Override
     @Transactional(readOnly = true)
-    public DicVo get(String id) {
+    public DicVo get(String id) throws LogicError {
         if (StringUtils.isEmpty(id)) {
             // throw error
+            log.debug("入参为空(" + Thread.currentThread().getStackTrace()[2].getMethodName() + "):id=" + id);
+        }
+
+        if (!dicDao.existsById(id)) {
+            log.debug("未查询到数据(" + Thread.currentThread().getStackTrace()[2].getMethodName() + "):id=" + id);
+            throw new LogicError(ResultCode.SEARCH_MISS, "id=" + id);
         }
 
         DicVo dicVo = new DicVo();

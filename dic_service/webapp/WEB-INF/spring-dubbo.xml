@@ -13,8 +13,8 @@
     <dubbo:registry protocol="zookeeper" address="127.0.0.1:2181" />
     <!-- 暴露服务地址 -->
     <dubbo:protocol name="dubbo" port="20081" />
+    <!-- 声明暴露的服务 -->
     <dubbo:service interface="org.example.service.dic.DicService" ref="dicService" />
-
     <bean id="dicService" class="org.example.dic.service.DicServiceImpl" />
 
 </beans>

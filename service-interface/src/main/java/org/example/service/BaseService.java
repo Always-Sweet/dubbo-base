@@ -1,5 +1,7 @@
 package org.example.service;
 
+import org.example.exception.LogicError;
+
 import java.util.List;
 
 public interface BaseService<DO, VO, QO> {
@@ -9,7 +11,7 @@ public interface BaseService<DO, VO, QO> {
     void delete(String id, String type);
     void batchDelete(List<String> ids, String type);
 
-    VO get(String id);
+    VO get(String id) throws LogicError;
     List<VO> getOfPage(QO param);
 
 }
