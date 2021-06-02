@@ -7,12 +7,18 @@ import org.example.dto.Result;
 import org.example.dto.dic.DicDeleteParams;
 import org.example.dto.dic.DicDo;
 import org.example.dto.dic.DicQuery;
+import org.example.exception.LogicError;
 import org.example.service.dic.DicService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
-
+/**
+ * @author 章春波
+ * @date 2021/6/1 15:49
+ * @ClassName: DicController
+ * @Description: 字典基础接口
+ */
 @RestController
 @RequestMapping("/dic")
 @Api(value = "字典基础接口", tags = {"字典模块"})

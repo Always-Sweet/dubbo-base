@@ -9,6 +9,12 @@ import javax.persistence.Id;
 import javax.persistence.Table;
 import java.io.Serializable;
 
+/**
+ * @author 章春波
+ * @date 2021/6/1 15:50
+ * @ClassName: Dic
+ * @Description: 字典模型
+ */
 @Data
 @Entity
 @Table(name = "dic")
@@ -20,7 +26,6 @@ public class Dic implements Serializable {
     private String dicId;
 
     @Column(name = "dic_code")
-
     private String dicCode;
 
     @Column(name = "dic_name")
