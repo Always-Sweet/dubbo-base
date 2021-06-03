@@ -1,0 +1,8 @@
+.dic-wrap {
+    background-color: #f8f7f6;
+    padding: 10px;
+    height: 100%;
+}
+.row-block-border > .ant-row > .ant-col {
+    background-color: white;
+}

@@ -4,3 +4,6 @@
 
 # compile
 target
+
+# react
+**/node_modules
