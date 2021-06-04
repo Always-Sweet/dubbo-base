@@ -145,7 +145,12 @@ public class DicServiceImpl implements DicService {
             }
             return criteriaBuilder.and(list.toArray(new Predicate[0]));
         };
-        List<Dic> search =  dicDao.findAll(specification, pageable).toList();
+        List<Dic> search = new ArrayList<>();
+        if (1 == paramDto.getReturnType()) {
+            search = dicDao.findAll(specification, pageable).toList();
+        } else if (2 == paramDto.getReturnType()) {
+            search = dicDao.findAll(specification);
+        }
         return search.stream().map(dicDo -> {
             DicVo dicVo = new DicVo();
             BeanUtils.copyProperties(dicDo, dicVo);
