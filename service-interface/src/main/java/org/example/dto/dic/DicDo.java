@@ -2,11 +2,11 @@ package org.example.dto.dic;
 
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
-import jakarta.validation.constraints.NotEmpty;
 import lombok.Data;
 import org.example.valid.dic.DicSaveCheck;
 import org.example.valid.dic.DicUpdateCheck;
 
+import javax.validation.constraints.NotEmpty;
 import java.io.Serializable;
 
 @Data

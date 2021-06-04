@@ -1,7 +1,10 @@
 package org.example.dto;
 
-import jakarta.validation.constraints.NotBlank;
 import lombok.Data;
+
+import javax.validation.constraints.Min;
+import javax.validation.constraints.NotNull;
+import java.io.Serializable;
 
 /**
  * @author 章春波
@@ -10,23 +13,29 @@ import lombok.Data;
  * @Description: 分页参数
  */
 @Data
-public class PageParams {
+public class PageParams implements Serializable {
 
     /**
      * 页码
      */
-    @NotBlank(message = "页码不能为空")
+    @NotNull(message = "页码不能为空")
+    @Min(1)
     private Integer page;
 
     /**
      * 单页数量
      */
-    @NotBlank(message = "单页数量不能为空")
+    @NotNull(message = "单页数量不能为空")
+    @Min(1)
     private Integer pageSize;
 
     /**
      * 返回类型：1.单页返回（默认），2.全量返回
      */
     private Integer returnType;
+
+    public void setReturnType(Integer returnType) {
+        this.returnType = returnType == null ? 1 : returnType;
+    }
 
 }
