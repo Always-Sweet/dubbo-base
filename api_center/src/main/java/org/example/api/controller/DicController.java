@@ -9,6 +9,8 @@ import org.example.dto.dic.DicDo;
 import org.example.dto.dic.DicQuery;
 import org.example.exception.LogicError;
 import org.example.service.dic.DicService;
+import org.example.valid.dic.DicSaveCheck;
+import org.example.valid.dic.DicUpdateCheck;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
@@ -33,6 +35,7 @@ public class DicController {
         return ResultBuilder.successWithData(dicService.get(id));
     }
 
+
     @GetMapping("/query")
     @ApiOperation(value = "查询字典", notes = "根据参数查询字典列表", httpMethod = "GET")
     public Result get(@RequestBody @Validated DicQuery query) {
@@ -41,20 +44,20 @@ public class DicController {
 
     @PostMapping
     @ApiOperation(value = "新增字典", notes = "新增字典", httpMethod = "POST")
-    public Result add(@RequestBody @Validated DicDo dic) {
+    public Result add(@RequestBody @Validated({DicSaveCheck.class}) DicDo dic) {
         return ResultBuilder.successWithData(dicService.add(dic));
     }
 
     @PutMapping
     @ApiOperation(value = "更新字典", notes = "更新字典", httpMethod = "PUT")
-    public Result modify(@RequestBody @Validated DicDo dic) {
+    public Result modify(@RequestBody @Validated({DicUpdateCheck.class}) DicDo dic) {
         dicService.update(dic);
         return ResultBuilder.successWithoutData();
     }
 
     @DeleteMapping
     @ApiOperation(value = "删除字典", notes = "多选删除及删除形式（注销/数据沉默）", httpMethod = "DELETE")
-    public Result delete(@RequestBody DicDeleteParams dicDeleteParams) {
+    public Result delete(@RequestBody @Validated DicDeleteParams dicDeleteParams) {
         dicService.batchDelete(dicDeleteParams.getIds(), dicDeleteParams.getDeleteType());
         return ResultBuilder.successWithoutData();
     }
