@@ -11,6 +11,7 @@ import org.example.dic.model.Dic;
 import org.example.dto.dic.DicVo;
 import org.example.exception.LogicError;
 import org.example.service.dic.DicService;
+import org.example.valid.dic.DicSaveCheck;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.BeanUtils;
@@ -38,7 +39,7 @@ public class DicServiceImpl implements DicService {
 
     @Override
     @Transactional
-    public String add(@Validated DicDo dicDo) {
+    public String add(@Validated({DicSaveCheck.class}) DicDo dicDo) {
         Dic search = dicDao.getById(dicDo.getDicCode());
         // 如果非空则已存在，不能重复创建
         if (search != null) {
