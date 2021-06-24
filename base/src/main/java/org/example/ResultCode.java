@@ -4,7 +4,8 @@ import org.apache.commons.lang3.StringUtils;
 
 public enum ResultCode {
     SUCCESS("100", "调用成功"),
-    SEARCH_MISS("101", "未查询到数据"),
+    PARAM_MISS("101", "入参缺失"),
+    SEARCH_MISS("102", "未查询到数据"),
     FAILURE("200", "请求失败");
 
     private String code;
