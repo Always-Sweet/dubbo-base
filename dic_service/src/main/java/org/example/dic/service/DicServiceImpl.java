@@ -2,6 +2,7 @@ package org.example.dic.service;
 
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
+import org.apache.log4j.Logger;
 import org.example.Constant;
 import org.example.ResultCode;
 import org.example.dic.dao.DicDao;
@@ -12,8 +13,7 @@ import org.example.dto.dic.DicVo;
 import org.example.exception.LogicError;
 import org.example.service.dic.DicService;
 import org.example.valid.dic.DicSaveCheck;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import org.example.valid.dic.DicUpdateCheck;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
@@ -32,7 +32,7 @@ import java.util.stream.Collectors;
 @Service("dicService")
 public class DicServiceImpl implements DicService {
 
-    private static final Logger log = LoggerFactory.getLogger(DicServiceImpl.class);
+    private static final Logger log = Logger.getLogger(DicServiceImpl.class);
 
     @Autowired
     DicDao dicDao;
@@ -56,7 +56,7 @@ public class DicServiceImpl implements DicService {
 
     @Override
     @Transactional
-    public void update(@Validated DicDo dicDo) {
+    public void update(@Validated({DicUpdateCheck.class}) DicDo dicDo) {
         Dic search = dicDao.getById(dicDo.getDicId());
         // 如果为空则不存在，无法更新
         if (search == null) {
@@ -112,11 +112,12 @@ public class DicServiceImpl implements DicService {
     public DicVo get(String id) throws LogicError {
         if (StringUtils.isEmpty(id)) {
             // throw error
-            log.debug("入参为空(" + Thread.currentThread().getStackTrace()[2].getMethodName() + "):id=" + id);
+            log.error("入参为空:id=" + id);
+            throw new LogicError(ResultCode.PARAM_MISS, "id=" + id);
         }
 
         if (!dicDao.existsById(id)) {
-            log.debug("未查询到数据(" + Thread.currentThread().getStackTrace()[2].getMethodName() + "):id=" + id);
+            log.warn("未查询到数据:id=" + id);
             throw new LogicError(ResultCode.SEARCH_MISS, "id=" + id);
         }
 
@@ -158,7 +159,5 @@ public class DicServiceImpl implements DicService {
             return dicVo;
         }).collect(Collectors.toList());
     }
-
-
 
 }
