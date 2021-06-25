@@ -38,7 +38,7 @@ public class DicController {
 
     @GetMapping("/query")
     @ApiOperation(value = "查询字典", notes = "根据参数查询字典列表", httpMethod = "GET")
-    public Result get(@RequestBody @Validated DicQuery query) {
+    public Result get(@RequestBody @Validated DicQuery query) throws LogicError {
         return ResultBuilder.successWithData(dicService.getOfPage(query));
     }
 

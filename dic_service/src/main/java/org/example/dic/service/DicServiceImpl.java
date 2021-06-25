@@ -6,6 +6,7 @@ import org.apache.log4j.Logger;
 import org.example.Constant;
 import org.example.ResultCode;
 import org.example.dic.dao.DicDao;
+import org.example.dto.PageResponse;
 import org.example.dto.dic.DicDo;
 import org.example.dto.dic.DicQuery;
 import org.example.dic.model.Dic;
@@ -132,11 +133,10 @@ public class DicServiceImpl implements DicService {
 
     @Override
     @Transactional(readOnly = true)
-    public List<DicVo> getOfPage(DicQuery paramDto) {
-        Pageable pageable = PageRequest.of(paramDto.getPage() - 1, paramDto.getPageSize());
-        Specification<Dic> specification = (Specification<Dic>) (root, query, criteriaBuilder) -> {
+    public PageResponse<DicVo> getOfPage(DicQuery paramDto) throws LogicError {
+        Specification<Dic> specification = (root, query, criteriaBuilder) -> {
             List<Predicate> list = new ArrayList<>();
-            Predicate p = null;
+            Predicate p;
             if (StringUtils.isNotEmpty(paramDto.getDicCode())) {
                 p = criteriaBuilder.like(root.get("dicCode"), paramDto.getDicCode());
                 list.add(p);
@@ -149,15 +149,34 @@ public class DicServiceImpl implements DicService {
         };
         List<Dic> search = new ArrayList<>();
         if (1 == paramDto.getReturnType()) {
-            search = dicDao.findAll(specification, pageable).toList();
+            Pageable pageable = PageRequest.of(paramDto.getPageNo() - 1, paramDto.getPageSize());
+            if (paramDto.getPageNo() == null || paramDto.getPageSize() == null) {
+                throw new LogicError(ResultCode.PARAM_MISS, "pageNo=" + paramDto.getPageNo() + ",pageSize=" + paramDto.getPageSize());
+            }
+
+            int count = (int) dicDao.count(specification);
+            if (count == 0) {
+                return new PageResponse<>(0, 0, null);
+            } else {
+                int realPageNo = (int) Math.ceil(count / paramDto.getPageSize() + 1);
+                if (paramDto.getPageNo() < realPageNo) {
+                    realPageNo = paramDto.getPageNo();
+                }
+                return new PageResponse<>(realPageNo, count,
+                        dicDao.findAll(specification,pageable).toList().stream().map(dicDo -> {
+                            DicVo dicVo = new DicVo();
+                            BeanUtils.copyProperties(dicDo, dicVo);
+                            return dicVo;
+                        }).collect(Collectors.toList()));
+            }
         } else if (2 == paramDto.getReturnType()) {
-            search = dicDao.findAll(specification);
+            return new PageResponse<>(dicDao.findAll(specification).stream().map(dicDo -> {
+                DicVo dicVo = new DicVo();
+                BeanUtils.copyProperties(dicDo, dicVo);
+                return dicVo;
+            }).collect(Collectors.toList()));
         }
-        return search.stream().map(dicDo -> {
-            DicVo dicVo = new DicVo();
-            BeanUtils.copyProperties(dicDo, dicVo);
-            return dicVo;
-        }).collect(Collectors.toList());
+        throw new LogicError(ResultCode.PAGE_RETURNTYPE_ERROR);
     }
 
 }

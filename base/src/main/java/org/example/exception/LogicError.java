@@ -14,9 +14,20 @@ public class LogicError extends Exception {
 
     private ResultCode resultCode;
 
+    public LogicError() {
+        super();
+    }
+
     public LogicError(ResultCode resultCode, String message) {
         super(message);
         this.resultCode = resultCode;
     }
+
+    public LogicError(ResultCode resultCode) {
+        super();
+        this.resultCode = resultCode;
+    }
+
+
 
 }
